@@ -14,7 +14,6 @@ interface FrequencerInterface {     // This interface provides the design for fr
     // For the incorrect value of START or END, the behavior is undefined.
 */
 
-
 public class Frequencer implements FrequencerInterface{
     // Code to Test, *warning: This code  contains intentional problem*
     byte [] myTarget;
@@ -25,6 +24,7 @@ public class Frequencer implements FrequencerInterface{
 	int targetLength = myTarget.length;
 	int spaceLength = mySpace.length;
 	int count = 0;
+	//繰り返し条件が正しくは　start<(spaceLength-targetLength+1) 
 	for(int start = 0; start<spaceLength; start++) { // Is it OK?
 	    boolean abort = false;
 	    for(int i = 0; i<targetLength; i++) {
