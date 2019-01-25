@@ -1,4 +1,4 @@
-package s4.B183324;
+package s4.B183323;
 import java.lang.*;
 import java.lang.String;
 import java.util.*;
@@ -45,7 +45,6 @@ public class Frequencer implements FrequencerInterface{
         		System.out.write('\n');
     	    }
     	}
-      System.out.println("target=" + myTarget);
     }
 
     private int suffixCompare(int i, int j) {
@@ -63,18 +62,22 @@ public class Frequencer implements FrequencerInterface{
     	//
     	// ****  Please write code here... ***
     	//
-      /*byte [] suffix_i;
-      byte [] suffix_j;
-      for(i;i < mySpace.length; i++){
-          suffix_i[i] = mySpace[suffixArray[i]];
-      }*/
-        if(mySpace[suffixArray[i]] > mySpace[suffixArray[j]]){
+      for(; i < mySpace.length && j < mySpace.length; i++,j++){
+        if(mySpace[i] > mySpace[j]){
           return 1;
-        }else if(mySpace[suffixArray[i]] < mySpace[suffixArray[j]]){
-          return -1;
-        }else if(mySpace[suffixArray[i]] == mySpace[suffixArray[j]]){
-          return 0;
         }
+        else if(mySpace[i] < mySpace[j]){
+          return -1;
+        }
+        else if(mySpace[i] == mySpace[j]){
+        }
+      }
+      if((mySpace.length == i)&&(mySpace.length > j)){
+        return -1;
+      }
+      else if((mySpace.length > i)&&(mySpace.length == j)){
+        return 1;
+      }
 	   return 0; // This line should be modified.
     }
 
@@ -87,98 +90,127 @@ public class Frequencer implements FrequencerInterface{
     	}
     	// Sorting is not implmented yet.
     	// ****  Please write code here... ***
-      for(int j = 0; j < mySpace.length - 1; j++){
-        for(int k = j + 1; k < mySpace.length; k++){
-          if(suffixCompare(j, k)==1){
-            continue;
+
+      for (int i = 0; i < mySpace.length - 1; i++) {
+          for (int j = mySpace.length - 1; j > i; j--) {
+              if (suffixCompare(suffixArray[j-1], suffixArray[j])==1) {
+                  int tmpNum = suffixArray[j - 1];
+                  suffixArray[j - 1] = suffixArray[j];
+                  suffixArray[j] = tmpNum;
+              }
           }
-          else if(suffixCompare(j, k)==-1){
-            suffixArray[j] = k;
-            suffixArray[k] = j;
-          }
-          else if(suffixCompare(j, k)==0){
-            suffixCompare(j, k+1);
-          }
-        }
       }
     }
 
     private int targetCompare(int i, int j, int end) {
-	// comparing suffix_i and target_j_end by dictonary order with limitation of length;
-	// if the beginning of
-  int s = suffixArray[i];
-  		for(j=s;j<mySpace.length;j++) {
-  		    System.out.write(mySpace[j]);
-  		}
-  		System.out.write('\n'); //suffix_i matches target_i_end, and suffix is longer than target  it returns 0;
-	// if suffix_i > target_j_end it return 1;
-	// if suffix_i < target_j_end it return -1
-	// It is not implemented yet.
-	// It should be used to search the apropriate index of some suffix.
-	// Example of search
-	// suffix          target
-  // "o"       >     "i"
-  // "o"       <     "z"
-	// "o"       =     "o"
-  // "o"       <     "oo"
-	// "Ho"      >     "Hi"
-	// "Ho"      <     "Hz"
-	// "Ho"      =     "Ho"
-  // "Ho"      <     "Ho "   : "Ho " is not in the head of suffix "Ho"
-	// "Ho"      =     "H"     : "H" is in the head of suffix "Ho"
-	//
-	// ****  Please write code here... ***
-	//
-	return 0; // This line should be modified.
+    	// comparing suffix_i and target_j_end by dictonary order with limitation of length;
+    	// if the beginning of
+      //suffix_i matches target_i_end, and suffix is longer than target  it returns 0;
+    	// if suffix_i > target_j_end it return 1;
+    	// if suffix_i < target_j_end it return -1
+    	// It is not implemented yet.
+    	// It should be used to search the apropriate index of some suffix.
+    	// Example of search
+    	// suffix          target
+      // "o"       >     "i"
+      // "o"       <     "z"
+    	// "o"       =     "o"
+      // "o"       <     "oo"
+    	// "Ho"      >     "Hi"
+    	// "Ho"      <     "Hz"
+    	// "Ho"      =     "Ho"
+      // "Ho"      <     "Ho "   : "Ho " is not in the head of suffix "Ho"
+    	// "Ho"      =     "H"     : "H" is in the head of suffix "Ho"
+    	//
+    	// ****  Please write code here... ***
+    	//
+        if(mySpace[i] > myTarget[j]){
+          return 1;
+        }
+        else if(mySpace[i] < myTarget[j]){
+          return -1;
+        }else if(mySpace[i] == myTarget[j]){
+          if(mySpace.length - i < end - j){
+            return -1;
+          }
+          i++;
+          for(int k = j + 1; k < end; k++, i++){
+            if(i < suffixArray.length){
+              if(mySpace[i] > myTarget[k]){
+                return 1;
+              }
+              else if(mySpace[i] < myTarget[k]){
+                return -1;
+              }
+              /*else if((mySpace.length - i + 1) < (myTarget.length - k + 1)){
+                return -1;
+              }*/
+            }
+          }
+          return 0;
+        }
+    	return 0; // This line should be modified.
     }
 
     private int subByteStartIndex(int start, int end) {
-	// It returns the index of the first suffix which is equal or greater than subBytes;
-	// not implemented yet;
-	// For "Ho", it will return 5  for "Hi Ho Hi Ho".
-	// For "Ho ", it will return 6 for "Hi Ho Hi Ho".
-	//
-	// ****  Please write code here... ***
-	//
-	return suffixArray.length; // This line should be modified.
+    	// It returns the index of the first suffix which is equal or greater than subBytes;
+    	// not implemented yet;
+    	// For "Ho", it will return 5  for "Hi Ho Hi Ho".
+    	// For "Ho ", it will return 6 for "Hi Ho Hi Ho".
+    	//
+    	// ****  Please write code here... ***
+    	//
+      for(int i = 0; i < suffixArray.length; i++){
+        if(targetCompare(suffixArray[i], start, end)==0){
+          System.out.println("i="+i);
+          return i;
+        }
+      }
+    	return suffixArray.length; // This line should be modified.
     }
 
     private int subByteEndIndex(int start, int end) {
-	// It returns the next index of the first suffix which is greater than subBytes;
-	// not implemented yet
-	// For "Ho", it will return 7  for "Hi Ho Hi Ho".
-	// For "Ho ", it will return 7 for "Hi Ho Hi Ho".
-	//
-	// ****  Please write code here... ***
-	//
-	return suffixArray.length; // This line should be modified.
+    	// It returns the next index of the first suffix which is greater than subBytes;
+    	// not implemented yet
+    	// For "Ho", it will return 7  for "Hi Ho Hi Ho".
+    	// For "Ho ", it will return 7 for "Hi Ho Hi Ho".
+    	//
+    	// ****  Please write code here... ***
+    	//
+      for(int i = suffixArray.length-1; i > -1; i--){
+        if(targetCompare(suffixArray[i], start, end)==0){
+          System.out.println("i="+(i+1));
+          return i+1;
+        }
+      }
+    	return suffixArray.length; // This line should be modified.
     }
 
     public int subByteFrequency(int start, int end) {
-	/* This method be work as follows, but
-	int spaceLength = mySpace.length;
-	int count = 0;
-	for(int offset = 0; offset< spaceLength - (end - start); offset++) {
-	    boolean abort = false;
-	    for(int i = 0; i< (end - start); i++) {
-		if(myTarget[start+i] != mySpace[offset+i]) { abort = true; break; }
-	    }
-	    if(abort == false) { count++; }
-	}
-	*/
-	int first = subByteStartIndex(start, end);
-	int last1 = subByteEndIndex(start, end);
-	return last1 - first;
+    	/* This method be work as follows, but
+    	int spaceLength = mySpace.length;
+    	int count = 0;
+    	for(int offset = 0; offset< spaceLength - (end - start); offset++) {
+    	    boolean abort = false;
+    	    for(int i = 0; i< (end - start); i++) {
+    		if(myTarget[start+i] != mySpace[offset+i]) { abort = true; break; }
+    	    }
+    	    if(abort == false) { count++; }
+    	}
+    	*/
+    	int first = subByteStartIndex(start, end);
+    	int last1 = subByteEndIndex(start, end);
+    	return last1 - first;
     }
 
     public void setTarget(byte [] target) {
-	myTarget = target; if(myTarget.length>0) targetReady = true;
+	     myTarget = target; if(myTarget.length>0) targetReady = true;
     }
 
     public int frequency() {
-	if(targetReady == false) return -1;
-	if(spaceReady == false) return 0;
-	return subByteFrequency(0, myTarget.length);
+    	if(targetReady == false) return -1;
+    	if(spaceReady == false) return 0;
+    	return subByteFrequency(0, myTarget.length);
     }
 
     public static void main(String[] args) {
@@ -200,17 +232,20 @@ public class Frequencer implements FrequencerInterface{
 	       9:o
 	       A:o Hi Ho
 	    */
-	    frequencerObject.setTarget("H".getBytes());
+	    //frequencerObject.setTarget("H".getBytes());
+      frequencerObject.setTarget("H".getBytes());
 	    //
 	    // ****  Please write code to check subByteStartIndex, and subByteEndIndex
 	    //
-
+      for(int i = 0; i < frequencerObject.suffixArray.length; i++){
+        System.out.println("my=" + frequencerObject.targetCompare(frequencerObject.suffixArray[i], 0, frequencerObject.myTarget.length));
+      }
 	    int result = frequencerObject.frequency();
 	    System.out.print("Freq = "+ result+" ");
 	    if(4 == result) { System.out.println("OK"); } else {System.out.println("WRONG"); }
 	}
 	catch(Exception e) {
-	    System.out.println("STOP");
+	    System.out.println("STOP" + e);
 	}
     }
 }

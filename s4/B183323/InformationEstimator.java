@@ -36,7 +36,7 @@ public class InformationEstimator implements InformationEstimatorInterface{
 
     public void setTarget(byte [] target) { myTarget = target;}
     public void setSpace(byte []space) { 
-	myFrequencer = new Frequencer();
+    myFrequencer = new Frequencer();
 	mySpace = space; myFrequencer.setSpace(space); 
     }
 
