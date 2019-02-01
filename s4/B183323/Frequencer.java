@@ -162,7 +162,7 @@ public class Frequencer implements FrequencerInterface{
     	//
       for(int i = 0; i < suffixArray.length; i++){
         if(targetCompare(suffixArray[i], start, end)==0){
-          System.out.println("i="+i);
+          // System.out.println("i="+i);
           return i;
         }
       }
@@ -179,7 +179,7 @@ public class Frequencer implements FrequencerInterface{
     	//
       for(int i = suffixArray.length-1; i > -1; i--){
         if(targetCompare(suffixArray[i], start, end)==0){
-          System.out.println("i="+(i+1));
+          // System.out.println("i="+(i+1));
           return i+1;
         }
       }
