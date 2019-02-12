@@ -3,19 +3,6 @@ import java.lang.*;
 import java.util.Arrays;
 import s4.specification.*;
 
-/* What is imported from s4.specification
-package s4.specification;
-public interface InformationEstimatorInterface{
-    void setTarget(byte target[]); // set the data for computing the information quantities
-    void setSpace(byte space[]); // set data for sample space to computer probability
-    double estimation(); // It returns 0.0 when the target is not set or Target's length is zero;
-// It returns Double.MAX_VALUE, when the true value is infinite, or space is not set.
-// The behavior is undefined, if the true value is finete but larger than Double.MAX_VALUE.
-// Note that this happens only when the space is unreasonably large. We will encounter other problem anyway.
-// Otherwise, estimation of information quantity,
-}
-*/
-
 public class InformationEstimator implements InformationEstimatorInterface{
     // Code to tet, *warning: This code condtains intentional problem*
     byte [] myTarget; // data to compute its information quantity
@@ -42,63 +29,33 @@ public class InformationEstimator implements InformationEstimatorInterface{
     }
 
     public double estimation(){
-	boolean[] partition = new boolean[myTarget.length+1];
-	int np;
+    	double[] nparray = new double[myTarget.length+1];
+    	double value = Double.MAX_VALUE; // value = mininimum of each "value1".
+    	double ret = 0.0;
+    	int start=0, end=0;
 
-double[][] nparray = new double[myTarget.length+1][myTarget.length];
-
-for(int a = 0; a < myTarget.length+1; a++){
-  for(int b = 0;b < myTarget.length ; b++){
-    nparray[a][b] = -1.0;
-  }
-}
-
-	np = 1<<(myTarget.length-1);
-	// System.out.println("np="+np+" length="+myTarget.length);
-	double value = Double.MAX_VALUE; // value = mininimum of each "value1".
-
-	for(int p=0; p<np; p++) { // There are 2^(n-1) kinds of partitions.
-	    // binary representation of p forms partition.
-	    // for partition {"ab" "cde" "fg"}
-	    // a b c d e f g   : myTarget
-	    // T F T F F T F T : partition:
-	    partition[0] = true; // I know that this is not needed, but..
-	    for(int i=0; i<myTarget.length -1;i++) {
-		      partition[i+1] = (0 !=((1<<i) & p));
-	    }
-	    partition[myTarget.length] = true;
-
-	    // Compute Information Quantity for the partition, in "value1"
-	    // value1 = IQ(#"ab")+IQ(#"cde")+IQ(#"fg") for the above example
-            double value1 = (double) 0.0;
-	    int end = 0;;
-	    int start = end;
-	    while(start<myTarget.length) {
-		// System.out.write(myTarget[end]);
-		end++;;
-		while(partition[end] == false) {
-		    // System.out.write(myTarget[end]);
-		    end++;
-		}
-		// System.out.print("("+start+","+end+")");
-		myFrequencer.setTarget(subBytes(myTarget, start, end));
-    // System.out.println(Arrays.deepToString(nparray));
-    // System.out.println(p);
-    // System.out.println(end);
-    if(nparray[end][start] == -1.0){
-      nparray[end][start] = iq(myFrequencer.frequency());
-    }
-
-		value1 = value1 + nparray[end][start];
-    start = end;
-
-      }
-	    // System.out.println(" "+ value1);
-
-	    // Get the minimal value in "value"
-	    if(value1 < value) value = value1;
-	}
-	return value;
+    	for(int i=0; i<myTarget.length; i++){
+    		end = i+1;
+    		if(i == 0){
+    			myFrequencer.setTarget(subBytes(myTarget, start, end));
+    			nparray[i] = iq(myFrequencer.frequency());
+    		}
+    		else{
+    			for(int j=0; j<end; j++){
+    				start = j;
+    				myFrequencer.setTarget(subBytes(myTarget, start, end));
+    				ret = iq(myFrequencer.frequency());
+    				if(start != 0){
+    					ret = nparray[j-1] + ret;
+    				}
+    				if(ret < value){
+    					value = ret;
+    				}
+    			}
+    			nparray[i] = value;
+    		}
+    	}
+		return nparray[myTarget.length-1];
     }
 
     public static void main(String[] args) {
